@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jagarani Co-Operative Society</title>
+    
+    <!-- PWA Manifest & Themeing -->
+    <meta name="theme-color" content="#4f46e5"/>
+    <link rel="manifest" href="/JagaraniApp/manifest.json">
+    <link rel="stylesheet" href="/JagaraniApp/css/style.css">
+    <link rel="icon" href="/JagaraniApp/images/app-icon.svg" type="image/svg+xml">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- App Container -->
+    <div id="app" class="max-w-7xl mx-auto">
+
+        <!-- Header -->
+        <header class="sticky-header bg-white shadow-md pt-7">
+            <div class="px-4 py-3 border-b">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-xl md:text-2xl font-bold text-indigo-600">Jagarani Co-Operative Society</h1>
+                    <div class="flex items-center space-x-2">
+                         <select id="financialYearSelector" class="p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"></select>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabs Navigation -->
+            <nav id="tabs" class="flex justify-around bg-white border-b">
+                <button data-tab="dashboard" class="tab-button w-full p-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600 focus:outline-none active">Dashboard</button>
+                <button data-tab="members" class="tab-button w-full p-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600 focus:outline-none">Members</button>
+                <button data-tab="loans" class="tab-button w-full p-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600 focus:outline-none">Loan Register</button>
+                <button data-tab="fds" class="tab-button w-full p-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600 focus:outline-none">FD Register</button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="px-4 pb-4 pt-6">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content">
+                <!-- KPIs -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-lg shadow"><h3 class="text-sm font-medium text-gray-500">Online Balance</h3><p id="kpiOnlineBalance" class="text-2xl font-bold"></p></div>
+                    <div class="bg-white p-4 rounded-lg shadow"><h3 class="text-sm font-medium text-gray-500">Offline Balance</h3><p id="kpiOfflineBalance" class="text-2xl font-bold"></p></div>
+                    <div class="bg-white p-4 rounded-lg shadow"><h3 class="text-sm font-medium text-gray-500">Profit / Loss</h3><p id="kpiProfitLoss" class="text-2xl font-bold"></p></div>
+                    <div class="bg-white p-4 rounded-lg shadow"><h3 class="text-sm font-medium text-gray-500">Active Loans Value</h3><p id="kpiActiveLoans" class="text-2xl font-bold"></p></div>
+                </div>
+                <!-- Charts -->
+                <div class="bg-white p-4 rounded-lg shadow mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Asset Allocation</h3>
+                    <div class="w-full h-64 flex justify-center"><canvas id="assetAllocationChart"></canvas></div>
+                </div>
+                <!-- Management Sections -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">Financial Year Management</h3>
+                        <p class="text-sm text-gray-600 mb-4">Create a new financial year or manage existing ones.</p>
+                        <button id="manageYearsBtn" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700">Manage Financial Years</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-2">Data Management</h3>
+                        <p class="text-sm text-gray-600 mb-4">Backup all data for the selected year or restore from a file.</p>
+                        <div class="flex space-x-2">
+                            <button id="backupDataBtn" class="flex-1 bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">Backup Data</button>
+                            <button onclick="document.getElementById('restoreDataInput').click()" class="flex-1 bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700">Restore Data</button>
+                            <input type="file" id="restoreDataInput" class="hidden" accept=".json">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members Tab -->
+            <div id="members" class="tab-content hidden">
+                 <!-- Member Views Toggle -->
+                <div class="mb-4">
+                    <div class="flex border-b">
+                        <button id="viewMembersBtn" class="py-2 px-4 font-medium text-indigo-600 border-b-2 border-indigo-600">Members List</button>
+                        <button id="viewContributionsBtn" class="py-2 px-4 font-medium text-gray-500">Contributions</button>
+                    </div>
+                </div>
+                
+                <!-- Members List View -->
+                <div id="membersListView">
+                    <div class="flex justify-end mb-4">
+                        <button id="addMemberBtn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700">Add Member</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow mb-6 overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contribution Till Date</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contr. %</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit Share</th><th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr></thead>
+                            <tbody id="membersTable" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-4">Top 10 Contributors</h3>
+                         <div class="w-full h-72"><canvas id="topContributorsChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Contributions View -->
+                <div id="contributionsView" class="hidden">
+                     <div class="bg-white p-4 rounded-lg shadow overflow-x-auto">
+                         <table class="min-w-full divide-y divide-gray-200 border">
+                             <thead id="contributionsHeader" class="bg-gray-50"></thead>
+                             <tbody id="contributionsTable" class="bg-white divide-y divide-gray-200"></tbody>
+                         </table>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Loan Register Tab -->
+            <div id="loans" class="tab-content hidden">
+                <div class="flex justify-end mb-4">
+                    <button id="addLoanBtn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700">Add Loan</button>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th><th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr></thead>
+                        <tbody id="loansTable" class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FD Register Tab -->
+            <div id="fds" class="tab-content hidden">
+                <div class="flex justify-end mb-4">
+                    <button id="addFdBtn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700">Add FD</button>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow overflow-x-auto">
+                     <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th><th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr></thead>
+                        <tbody id="fdsTable" class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modals Container -->
+        <div id="modalContainer"></div>
+
+        <!-- Toast Notifications Container -->
+        <div id="toast-container"></div>
+    </div>
+
+    <!-- Modal Templates (will be cloned and populated by JS) -->
+    <template id="genericModalTemplate">
+        <div class="modal-enter fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4" id="modal-backdrop">
+            <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                <h3 class="text-xl font-semibold mb-4" id="modal-title"></h3>
+                <div id="modal-body"></div>
+                <div class="mt-6 flex justify-end space-x-2" id="modal-footer"></div>
+            </div>
+        </div>
+    </template>
+    
+    <script src="/JagaraniApp/js/app.js" defer></script>
+</body>
+</html>

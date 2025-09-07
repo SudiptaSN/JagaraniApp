@@ -1,0 +1,16 @@
+{
+    "name": "Jagarani Co-Op Society",
+    "short_name": "Jagarani",
+    "start_url": "/JagaraniApp/",
+    "display": "standalone",
+    "background_color": "#f3f4f6",
+    "theme_color": "#4f46e5",
+    "description": "Financial Management Dashboard for Jagarani Co-Operative Society",
+    "icons": [
+        {
+            "src": "/JagaraniApp/images/app-icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}
